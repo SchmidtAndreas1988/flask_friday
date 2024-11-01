@@ -1,6 +1,6 @@
-# stop @ 9
+# stop @ 11
 
-from flask import Flask, render_template, flash
+from flask import Flask, render_template, flash, request
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
@@ -14,7 +14,11 @@ app = Flask(__name__)
 
 
 # Add Database
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
+# OLD SQL LITE DB
+# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
+
+# NEW MYSQL DB
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:1234@localhost/our_users"
 # Secret Key
 app.config["SECRET_KEY"] = "my super secret key that no one is supposed to know"
 # Initialize the Database
@@ -107,6 +111,27 @@ def name():
         flash("Form Submitted Successfully!")
     return render_template("name.html", name = name, form = form)
            
+
+# Update Database Record
+@app.route("/update/<int:id>", methods = ["GET", "POST"])
+def update(id):
+    form = UserForm()
+    name_to_update = Users.query.get_or_404(id)
+    
+    if request.method == "POST":
+        name_to_update.name = request.form["name"]
+        name_to_update.email = request.form["email"]
+        try:
+            db.session.commit()
+            flash("User Updated Successfully")
+            return render_template("update.html", form = form, name_to_update = name_to_update)
+        except:
+            flash("Error! Looks like there was a Problem!")
+            return render_template("update.html", form = form, name_to_update = name_to_update)
+    
+    else:
+        return render_template("update.html", form = form, name_to_update = name_to_update)
+
 
 
 
