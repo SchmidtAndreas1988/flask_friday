@@ -2,7 +2,6 @@
 
 {% block content %}
 
-{{ ckeditor.load() }}
 
 {% for message in get_flashed_messages() %}
     <div class="alert alert-primary alert-dismissible fade show" role="alert">
@@ -13,11 +12,18 @@
 
 {% endfor %}
 
-{% if current_user.is_authenticated %}
 
-<h1>Add Blog Post...:</h1>
-    <br/>
-    <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
+
+
+
+
+<br/>
+<h2>Edit Post</h2>
+<br/>
+
+
+<div class="shadow p-3 mb-5 bg-body-tertiary rounded">
+    
     <form method="POST">
         {{ form.hidden_tag() }}
 
@@ -33,18 +39,14 @@
 
         {{ form.submit(class="btn btn-secondary") }}
     </form>
-        {{ ckeditor.load() }}
-        {{ ckeditor.config(name="content") }}
-    </div>
+    {{ ckeditor.load() }}
+    {{ ckeditor.config(name="content") }}
+    
     <br/>
+    
 
-    {% else %}
-    <h2>Must be logged in...</h2>
-    <p>Sorry, you must be logged in to access this page!</p>
+</div>
 
-    <a href="{{ url_for('login') }}">Login Here</a>
-
-    {% endif %}
-
+<a href="{{ url_for('posts') }}" class = "btn btn-outline-secondary btn-small">Back to Blog</a>
 
 {% endblock %}
